@@ -17,12 +17,14 @@ public class Model {
 	private Map<String,Genes> idMap;
 	private Graph<Genes,DefaultWeightedEdge> grafo;
 	private GenesDao dao;
+	private Simulatore sim;
 	
 	public Model() {
 		idMap=new HashMap<>();
 		dao=new GenesDao();
 
 		dao.getAllGenes(idMap);
+		sim=new Simulatore();
 	}
 	
 	public void creaGrafo() {
@@ -60,5 +62,11 @@ public class Model {
 		result.sort(new ComparatorPesi());
 		
 		return result;
+	}
+	
+	public List<Genes> simula(Genes g,int n){
+		sim.init(g, n, grafo);
+		sim.run();
+		return sim.getInStudio();
 	}
 }

@@ -5,6 +5,7 @@
 package it.polito.tdp.genes;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -56,7 +57,7 @@ public class FXMLController {
     	this.cmbGeni.getItems().addAll(model.getAllVertici());
     	this.btnGeniAdiacenti.setDisable(false);
     	this.cmbGeni.setDisable(false);
-    	
+    	this.btnSimula.setDisable(false);
     }
 
     @FXML
@@ -76,7 +77,20 @@ public class FXMLController {
 
     @FXML
     void doSimula(ActionEvent event) {
-
+    	int n=0;
+    	Genes g=this.cmbGeni.getValue();
+    	if(g==null) {
+    		txtResult.setText("Inserire gene!");
+    		return;
+    	}
+    	try {
+    		n=Integer.parseInt(this.txtIng.getText());
+    	}catch(NumberFormatException e) {
+    		e.printStackTrace();
+    	}
+    	List<Genes> gen=new ArrayList<>(model.simula(g, n));
+    	for(Genes gi:gen)
+    		this.txtResult.appendText("\n"+gi.getGeneId());
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
