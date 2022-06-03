@@ -5,8 +5,10 @@
 package it.polito.tdp.genes;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
+import it.polito.tdp.genes.model.Adiacenti;
 import it.polito.tdp.genes.model.Genes;
 import it.polito.tdp.genes.model.Model;
 import javafx.event.ActionEvent;
@@ -30,7 +32,7 @@ public class FXMLController {
     private Button btnCreaGrafo; // Value injected by FXMLLoader
 
     @FXML // fx:id="cmbGeni"
-    private ComboBox<?> cmbGeni; // Value injected by FXMLLoader
+    private ComboBox<Genes> cmbGeni; // Value injected by FXMLLoader
 
     @FXML // fx:id="btnGeniAdiacenti"
     private Button btnGeniAdiacenti; // Value injected by FXMLLoader
@@ -46,14 +48,30 @@ public class FXMLController {
 
     @FXML
     void doCreaGrafo(ActionEvent event) {
+    	this.cmbGeni.getItems().clear();
+    	model.creaGrafo();
+    	txtResult.setText("Grafo creato\n");
+    	txtResult.appendText("#vertici "+model.vertici());
+    	txtResult.appendText("#archi "+model.archi());
+    	this.cmbGeni.getItems().addAll(model.getAllVertici());
+    	this.btnGeniAdiacenti.setDisable(false);
+    	this.cmbGeni.setDisable(false);
     	
-
     }
 
     @FXML
     void doGeniAdiacenti(ActionEvent event) {
-
+    	Genes g=this.cmbGeni.getValue();
+    	if(g==null) {
+    		txtResult.setText("Inserire gene!");
+    		return;
+    	}
+    	List<Adiacenti> res=model.getAdiacenti(g);
     	
+		txtResult.appendText("\n\nGeni adiacenti a "+g.getGeneId()+"\n");
+    	for(Adiacenti a:res) {
+    		txtResult.appendText(""+a.getG2()+" "+a.getPeso()+"\n");
+    	}
     }
 
     @FXML
@@ -69,7 +87,10 @@ public class FXMLController {
         assert txtIng != null : "fx:id=\"txtIng\" was not injected: check your FXML file 'Scene.fxml'.";
         assert btnSimula != null : "fx:id=\"btnSimula\" was not injected: check your FXML file 'Scene.fxml'.";
         assert txtResult != null : "fx:id=\"txtResult\" was not injected: check your FXML file 'Scene.fxml'.";
-
+        btnSimula.setDisable(true);
+        this.btnGeniAdiacenti.setDisable(true);
+        this.cmbGeni.setDisable(true);
+        
     }
     
     public void setModel(Model model) {
